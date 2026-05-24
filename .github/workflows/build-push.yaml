@@ -19,8 +19,6 @@ jobs:
   build-and-push:
     name: Build-and push to ECR
     runs-on: ubuntu-latest
-    outputs:
-      image-tag: ${{ steps}}
 
     steps:
       - name: Checkout code
