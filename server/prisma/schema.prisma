@@ -1,0 +1,205 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// ------------ CORE HIERARCHY ------------ ///
+model Region {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  schools    School[]
+  adminMetas AdminMeta[] // opposite relation for AdminMeta.region
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model School {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  regionId Int
+  region   Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  students   Student[]
+  adminMetas AdminMeta[] // opposite relation for AdminMeta.school
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, regionId])
+  @@index([regionId]) // quick region-wise filtering
+}
+
+/// ------------ USERS & AUTH ------------ ///
+enum Role {
+  STUDENT
+  SCHOOLADMIN
+  REGIONALADMIN
+  SUPERADMIN
+}
+
+model Account {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  password   String
+  role       Role      @default(STUDENT)
+  provider   String    @default("credentials")
+  providerId String?
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  student       Student?       @relation("AccountStudent")
+  adminMeta     AdminMeta?
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  accountId Int
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model AdminMeta {
+  id        Int     @id @default(autoincrement())
+  accountId Int     @unique
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  // Scope control: at most ONE of these is non-null
+  regionId Int? // for REGIONALADMIN
+  region   Region? @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  schoolId Int?    @unique // for SCHOOLADMIN
+  school   School? @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([regionId])
+  @@index([schoolId])
+}
+
+model Student {
+  id        Int     @id @default(autoincrement())
+  accountId Int     @unique
+  account   Account @relation("AccountStudent", fields: [accountId], references: [id], onDelete: Cascade)
+
+  // denormalized path → no need for joins in analytics
+  schoolId Int
+  regionId Int
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  sessions     GameSession[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  StudentBadge StudentBadge[]
+
+  @@index([schoolId])
+  @@index([regionId])
+}
+
+/// ------------ GAMES & LEVELS ------------ ///
+model Game {
+  id        Int           @id @default(autoincrement())
+  title     String        @unique
+  levels    Level[]
+  sessions  GameSession[] // opposite relation for GameSession
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Level {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+
+  gameId    Int
+  game      Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  badge   Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  badgeId Int   @unique
+
+  gameSessions GameSession[] // opposite relation for GameSession.level
+
+  @@index([gameId])
+  
+}
+
+/// ------------ GAME PLAY LOG ------------ ///
+model GameSession {
+  id        Int     @id @default(autoincrement())
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  // cached dims → no deep join needed for aggregation
+  schoolId Int
+  regionId Int
+
+  gameId  Int
+  game    Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  
+  levelId Int?
+  level   Level? @relation(fields: [levelId], references: [id], onDelete: SetNull)
+
+  score    Int
+  duration Int // seconds
+  metadata Json? // flexible stats (accuracy, lives, etc.)
+  playedAt DateTime @default(now())
+
+  @@index([studentId])
+  @@index([schoolId])
+  @@index([regionId])
+  @@index([gameId, levelId])
+}
+
+/// ------------ BADGES & ACHIEVEMENTS ------------ ///
+
+enum BadgeType {
+  LEVEL // belongs to a level
+  SIGNUP // given on user registration
+  STREAK // given for daily streaks
+  CUSTOM // anything else you add later
+}
+
+model Badge {
+  id          Int     @id @default(autoincrement())
+  title       String @unique
+  description String?
+  iconUrl     String?
+
+  type BadgeType @default(LEVEL) // identifies the kind of badge
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  StudentBadge StudentBadge[]
+
+  Level Level?
+}
+
+model StudentBadge {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  badgeId   Int
+  earnedAt  DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  badge   Badge   @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  // prevents duplicate badge per student
+  @@unique([studentId, badgeId])
+  @@index([badgeId])
+}

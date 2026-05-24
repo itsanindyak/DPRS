@@ -1,0 +1,130 @@
+// ------------ CORE HIERARCHY ------------ //
+Table region {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  name string [unique, not null, note: 'Unique region name']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+}
+
+Table school {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  name string [not null, note: 'School name, unique per region']
+  region_id int [not null, note: 'Foreign key to region']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+
+  Indexes {
+    (name, region_id) [unique, note: 'Ensures unique school name per region']
+  }
+}
+
+// ------------ USERS & AUTH ------------ //
+Table account {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  email string [unique, not null, note: 'Unique email address']
+  password string [not null, note: 'Hashed password']
+  role string [not null, default: 'STUDENT', note: 'Enum: STUDENT, SCHOOLADMIN, REGIONALADMIN, SUPERADMIN']
+  provider string [not null, default: 'credentials', note: 'Auth provider (e.g., credentials, oauth)']
+  provider_id string [note: 'External provider ID, nullable']
+  verified_at datetime [note: 'Verification timestamp, nullable']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+}
+
+Table admin_meta {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  account_id int [unique, not null, note: 'Foreign key to account, one-to-one']
+  region_id int [note: 'Foreign key to region, nullable for REGIONALADMIN']
+  school_id int [unique, note: 'Foreign key to school, nullable for SCHOOLADMIN']
+
+  Note: 'At most one of region_id or school_id is non-null for scope control'
+}
+
+Table student {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  account_id int [unique, not null, note: 'Foreign key to account, one-to-one']
+  school_id int [not null, note: 'Denormalized foreign key to school']
+  region_id int [not null, note: 'Denormalized foreign key to region']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+}
+
+// ------------ GAMES & LEVELS ------------ //
+Table game {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  title string [not null, note: 'Game title']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+}
+
+Table level {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  name string [not null, note: 'Level name']
+  game_id int [not null, note: 'Foreign key to game']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+}
+
+Table game_session {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  student_id int [not null, note: 'Foreign key to student']
+  school_id int [not null, note: 'Denormalized foreign key to school']
+  region_id int [not null, note: 'Denormalized foreign key to region']
+  game_id int [not null, note: 'Foreign key to game']
+  level_id int [note: 'Foreign key to level, nullable']
+  score int [not null, note: 'Player score']
+  duration int [not null, note: 'Duration in seconds']
+  metadata json [note: 'Flexible stats (e.g., accuracy, lives)']
+  played_at datetime [default: `now()`, note: 'Session timestamp']
+
+  Indexes {
+    (game_id, level_id) [note: 'Index for game-level queries']
+    student_id [note: 'Index for student queries']
+    school_id [note: 'Index for school queries']
+    region_id [note: 'Index for region queries']
+  }
+}
+
+// ------------ BADGES & ACHIEVEMENTS ------------ //
+Table badge {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  title string [not null, note: 'Badge title']
+  description string [note: 'Badge description, nullable']
+  icon_url string [note: 'Badge icon URL, nullable']
+  game_id int [note: 'Foreign key to game, nullable for generic badges']
+  level_id int [note: 'Foreign key to level, nullable for level-specific badges']
+  created_at datetime [default: `now()`, note: 'Creation timestamp']
+  updated_at datetime [note: 'Last updated timestamp']
+}
+
+Table student_badge {
+  id int [pk, increment, note: 'Auto-incrementing primary key']
+  student_id int [not null, note: 'Foreign key to student']
+  badge_id int [not null, note: 'Foreign key to badge']
+  earned_at datetime [default: `now()`, note: 'Badge earned timestamp']
+
+  Indexes {
+    (student_id, badge_id) [unique, note: 'Prevents duplicate badges per student']
+  }
+}
+
+// ------------ RELATIONSHIPS ------------ //
+
+Ref: school.region_id > region.id
+Ref: admin_meta.region_id > region.id
+Ref: admin_meta.school_id > school.id
+Ref: admin_meta.account_id > account.id
+Ref: student.account_id > account.id
+Ref: student.school_id > school.id
+Ref: student.region_id > region.id
+Ref: level.game_id > game.id
+Ref: game_session.game_id > game.id
+Ref: game_session.level_id > level.id
+Ref: game_session.student_id > student.id
+Ref: game_session.school_id > school.id
+Ref: game_session.region_id > region.id
+Ref: badge.game_id > game.id
+Ref: badge.level_id > level.id
+Ref: student_badge.student_id > student.id
+Ref: student_badge.badge_id > badge.id
+
