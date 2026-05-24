@@ -1,0 +1,537 @@
+/* Regional Component Styles - Add these to your globals.css */
+.regional-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(255, 137, 6, 0.05);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 137, 6, 0.3);
+  min-height: 56px;
+  transition: all 0.3s ease;
+}
+
+.regional-item:hover {
+  transform: translateX(4px);
+  background: rgba(255, 137, 6, 0.08);
+  border-color: rgba(255, 137, 6, 0.5);
+}
+
+.regional-item:last-child {
+  margin-bottom: 0;
+}
+
+.regional-name {
+  color: #FFFFFE;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  flex: 1;
+  margin-right: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.regional-score {
+  color: #FF8906;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+/* Responsive styles for regional items */
+@media (max-width: 768px) {
+  .regional-item {
+    padding: 14px 16px;
+    min-height: 48px;
+  }
+  
+  .regional-name {
+    font-size: 13px;
+    margin-right: 12px;
+  }
+  
+  .regional-score {
+    font-size: 15px;
+  }
+}
+
+/*regionAdmin*/
+/* Regional Admin Dashboard Styles - Add these to your globals.css */
+
+/* Main Layout */
+.regional-dashboard-container {
+  padding: 2rem 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.regional-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.regional-full-span {
+  grid-column: span 2;
+}
+
+.regional-nav-icon {
+  font-size: 1.5rem;
+}
+
+/* Alert Banner */
+.regional-alert-banner {
+  background-color: #FF8906;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #0F0E17;
+  font-weight: 600;
+}
+
+.regional-alert-icon {
+  font-size: 1.25rem;
+}
+
+/* Regional Stats */
+.regional-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.regional-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 140px;
+  justify-content: center;
+}
+
+.regional-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.regional-stat-icon.bg-primary {
+  background-color: #FF8906;
+}
+
+.regional-stat-icon.bg-secondary {
+  background-color: #E53170;
+}
+
+.regional-stat-icon.bg-tertiary {
+  background-color: #F25F4C;
+}
+
+.regional-stat-icon.bg-quaternary {
+  background-color: #A7A9BE;
+}
+
+.regional-stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #FFFFFE;
+  margin-bottom: 0.25rem;
+}
+
+.regional-stat-label {
+  color: #A7A9BE;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.regional-stat-change {
+  background-color: #FF8906;
+  color: #0F0E17;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Common Subtitle */
+.regional-subtitle {
+  color: #A7A9BE;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Student Performance */
+.regional-performance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.regional-tab-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.regional-tab-button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #2A2A3A;
+  color: #A7A9BE;
+  font-weight: 400;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.regional-tab-button.active {
+  background-color: #FF8906;
+  color: #0F0E17;
+  font-weight: 600;
+}
+
+.regional-student-list {
+  max-height: 400px;
+}
+
+.regional-student-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.regional-student-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFE;
+  font-weight: bold;
+}
+
+.regional-student-avatar.primary {
+  background-color: #FF8906;
+}
+
+.regional-student-avatar.secondary {
+  background-color: #E53170;
+}
+
+.regional-student-avatar.tertiary {
+  background-color: #F25F4C;
+}
+
+.regional-student-details {
+  font-size: 0.75rem;
+  color: #A7A9BE;
+  margin-top: 0.25rem;
+}
+
+.regional-student-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.regional-stat-item {
+  text-align: center;
+  min-width: 60px;
+}
+
+.regional-stat-item-value {
+  color: #FFFFFE;
+  font-weight: 600;
+}
+
+.regional-stat-item-label {
+  color: #A7A9BE;
+  font-size: 0.75rem;
+}
+
+.regional-badges {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.regional-badge-icon {
+  font-size: 1rem;
+}
+
+/* Top Performers */
+.regional-performers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.regional-performer-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.regional-rank-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #FFFFFE;
+}
+
+.regional-rank-icon.regional-rank-first {
+  background-color: #FF8906;
+  font-size: 1rem;
+}
+
+.regional-rank-icon.regional-rank-second {
+  background-color: #E53170;
+  font-size: 1rem;
+}
+
+.regional-rank-icon.regional-rank-third {
+  background-color: #F25F4C;
+  font-size: 1rem;
+}
+
+.regional-rank-icon.regional-rank-other {
+  background-color: #A7A9BE;
+  font-size: 0.875rem;
+}
+
+.regional-performer-school {
+  font-size: 0.75rem;
+  color: #A7A9BE;
+  margin-top: 0.25rem;
+}
+
+/* Game Completion */
+.regional-games-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.regional-game-item {
+  margin-bottom: 1rem;
+}
+
+.regional-game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.regional-game-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.regional-game-icon {
+  font-size: 1.25rem;
+}
+
+.regional-game-name {
+  color: #FFFFFE;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.regional-game-percentage {
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.regional-game-percentage.fire {
+  color: #F25F4C;
+}
+
+.regional-game-percentage.earth {
+  color: #FF8906;
+}
+
+.regional-game-percentage.flood {
+  color: #E53170;
+}
+
+.regional-game-percentage.general {
+  color: #A7A9BE;
+}
+
+.regional-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #1E1E2E;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.regional-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.regional-progress-fill.fire {
+  background-color: #F25F4C;
+}
+
+.regional-progress-fill.earth {
+  background-color: #FF8906;
+}
+
+.regional-progress-fill.flood {
+  background-color: #E53170;
+}
+
+.regional-progress-fill.general {
+  background-color: #A7A9BE;
+}
+
+/* Key Insights */
+.regional-insights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.regional-insight-item {
+  padding: 1rem;
+  background-color: #1E1E2E;
+  border-radius: 8px;
+  border: 1px solid #2A2A3A;
+}
+
+.regional-insight-label {
+  color: #A7A9BE;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.regional-insight-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.regional-insight-value {
+  color: #FFFFFE;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.regional-insight-trend {
+  background-color: #FF8906;
+  color: #0F0E17;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Top Schools */
+.regional-schools-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.regional-school-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.regional-school-type {
+  color: #0F0E17;
+  padding: 0.125rem 0.5rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.regional-school-type.private {
+  background-color: #FF8906;
+}
+
+.regional-school-type.government {
+  background-color: #E53170;
+}
+
+.regional-school-type.aided {
+  background-color: #F25F4C;
+}
+
+.regional-school-students {
+  font-size: 0.75rem;
+  color: #A7A9BE;
+}
+
+/* Responsive Design for Regional Admin */
+@media (max-width: 1200px) {
+  .regional-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .regional-full-span {
+    grid-column: span 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .regional-dashboard-container {
+    padding: 1rem;
+  }
+
+  .regional-performance-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .regional-student-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-end;
+  }
+
+  .regional-stat-item {
+    min-width: auto;
+    text-align: right;
+  }
+
+  .regional-game-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .regional-insight-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
